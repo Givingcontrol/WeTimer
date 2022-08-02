@@ -1,0 +1,178 @@
+WeTimer
+timer for
+National Glider.
+Based on an ESP8266 WiFi microcontroller board type Wemos D1
+mini (34mm x 26mm), the WeTimer timer allows you to control two
+servos according to the different flight phases of the glider.
+One of the servos is used to control the movements of the stabilizer
+with a position during the winching phase, a position during the
+flight phase and a final position during dethermalization. The other
+servo allows 2 windage positions, one during winching when the
+cable is taut (drift in the axis), the other during flight or when the cable is slack. Time
+of flight begins following an action on a switch activated by the tension or the release of the cable of
+winching. The configuration is done through a web interface accessible via WiFi.
+Timer operation:
+Power on
+timer
+The timer turns on in "DT mode":
+- servo stabilizer in DT position,
+- rudder servo in flight position (steered).
+short pulse
+on switch hook:
+(Time < Arm delay parameter)
+Timer in "Army mode":
+- servo stabilizer switches to flight position,
+- rudder servo remains in flight position.
+Start of winching:
+(Action on the hook switch
+> Arming delay parameter)
+"Winch mode" timer:
+- servo stabilizer switches to winch position (over-incidence),
+- rudder servo switches to winch position (in the axis).
+Hook release:
+(With timer in "Winch mode")
+Flight mode timer:
+- servo stabilizer switches to flight position,
+- rudder servo switches to flight position.
+After "Flight Time"
+seconds:
+(With timer in "Flight mode")
+Returning the timer to "DT mode"
+Action on hook switch
+before "Flight Time" s.
+(With timer in "Flight mode") R
+return of timer to "winch mode"
+The LED flashes
+(frequency 2 seconds)
+The LED flashes
+(frequency 1/4 seconds)
+The LED flashes
+(frequency 1 seconds)
+The LED is off The hook must be mechanically connected to a normally open switch. It is at
+say that the electrical contact must be open if there is no winching cable or if the cable is
+relaxed. The electrical contact must close when the cable is energized.
+The timer has 4 distinct modes (or 4 states):
+• Dethermalised (DT),
+• Army,
+• Winch.
+• Flight.
+On power-up, the timer is placed in "dethermalised mode".
+In "dethermalized mode", the stabilizer servo is in the DT position and the rudder servo is in
+flight position (steered rudder in turn).
+A short pulse on the switch of the hook (closure of the electrical contact) switches the
+timer in “armed mode”.
+When the timer is armed, the stabilizer servo is in the flight position and the rudder servo is
+in flight position. The timer can remain in armed mode indefinitely. This mode allows the
+preparation of the glider for the flight (installation of the stabilizer for example) or adjustment of the
+hand launched glide.
+At the start of winching, an action on the switch of the hook for a duration greater than the delay
+arming defined in the parameters (see below) switches the timer to “winch mode”.
+In this mode, when the cable is taut, the rudder servo switches to the winch position (drift in
+axis) and the stabilizer servo also switches to the winch position (this makes it possible to manage an over-incidence of the stabilizer to facilitate climbing in light winds).
+If the cable slackens or is released, the timer then switches to "flight mode", and begins the countdown
+flight time. In this mode, the stabilizer servo and the rudder servo are in flight position.
+In flight mode, 2 events can occur:
+• If the cable is taut again before the end of the flight time countdown, the timer
+returns to "winch mode" the 2 servos return to the winch position and the time countdown
+of flight is reset,
+• if no action on the hook switch has occurred before the end of the countdown of the
+flight, the timer dethermalizes the model, i.e. The stabilizer servo is put in position
+DT and the timer switches to “dethermalised mode”.Timer wiring:
+The configuration of the location of the branch points of each element is entirely
+configurable within the timer program source code and can be modified for
+special needs.
+The default configuration of these connections is as follows:
+• Power supply by a 1s LiPo battery from 3 to 400 mAh between the 5V point and GND,
+• Hook switch: Normally open switch connected between D7 and D8,
+• Stabilizer servo signal on pin D2,
+• Rudder servo signal on pin D1,
+• The power supply for the servos is taken directly from the battery.
+Plan :
+Servo
+stabilizer
+switch hook
++ -
+1S LiPo
+300-400mAh
+Servo
+derivative
+s + - s + -
+Connections of the
+WeTimer Timer configuration:
+When powered, the timer acts as a WiFi access point. This allows
+to use any smartphone equipped with a WiFi connection to carry out the entire
+configuration. Once connected to the timer opening the internet browser on the phone
+is redirected to the settings editing web page,
+Activating Wi-Fi and connecting to the timer:
+• Swipe the screen from top to bottom,
+• Press and hold the Wi-Fi icon ,
+• If it is not already done, activate the option Use Wi-Fi,
+• Press the network corresponding to the timer.
+By default, the timer is seen as a named WiFi access point
+WeTimer_NN:NN:NN. The NN:NN:NN part is unique for each
+timer. By default, the WiFi network of the timer is not protected by
+a password. It is likely that your phone is asking you for a
+confirmation to connect to this unsecured network.
+Access point name can be changed as well as password protection
+password, we will see that later.
+Flight time setting:
+Once connected to the timer's WiFi network, the phone indicates that the network requires a
+authentication. Click on the message that says "Connect to WiFi network" to open the
+timer configuration page. In the event that the telephone does not offer you the connection
+to the network, open the Internet browser (e.g. Google Chrome) and enter the following address
+in the address bar: http://10.10.10.10
+You will then get the home page which allows you to configure the timer flight time:
+• The buttons and allow you to add or subtract 1 second from the flight time,
+• the buttons and allow you to add or subtract 10 seconds from the flight time,
+• the buttons and allow you to add or subtract 1 minute from the flight time,
+• The button is used to reread the time recorded in the timer in the event of
+accidental change,
+• the button is used to send the new time to the timer where it will be stored from
+permanently,
+• the button sends the order to dethermalize immediately to the timer whatever
+or its status.Configuration of other parameters:
+By clicking on the "Configure the timer" link on the main page, you switch to the
+configuration of all timer flight parameters:
+• Arming (s): Delay in seconds for the timer to switch from status
+"armed" to "Winch" status when the hook switch is activated,
+• Flight time (s): Flight time between the release of the switch on the
+hook and the DT,
+• Flight stabilizer servo (μs): Position of the stabilizer servo during flight or
+during winching when the hook switch is released,
+• Winch stabilizer servo (μs): Position of the stabilizer servo during the
+winching when the hook switch is activated,
+• Servo stab DT (μs): Position of the dethermalised servo stabilizer,
+• Rudder servo flight (μs): Position of the rudder servo during flight or
+during winching when the hook switch is released,
+• Winch rudder servo (μs): Position of the rudder servo during the
+winching when the hook switch is activated,
+The positioning parameters of the servos correspond to the frequency of the signals sent to the
+servo. A standard servo typically has a range of motion of 180°. The value of
+parameter can vary from 1000 μs to 2000 μs. 1000 μs corresponds to a servo position at 0°,
+2000 μs at 180°.
+The 2 buttons on the left located under the parameters respectively allow you to read the
+configuration stored in the timer or to resend the new parameters after a
+change.
+The third red button on the right allows to force the status of the timer in DT mode at any time.
+moment (RDT). 
+The RDT operates from a few tens to a few hundred meters in flight
+depending on the quality of propagation of the WiFi waves.
+Wi-Fi setup:
+By clicking on the "Configure WiFi" link on the main page, you switch to the
+Wi-Fi setup:
+• AP SSID: Name of the Wifi network as it is seen by the telephone to
+connect to the timer. Default: WeTimer_NN:NN:NN, with
+unique NN:NN:NN for each timer,
+• AP password: WiFi network connection password. empty by
+default (no password),
+• CLI SSID: Name of the WiFi network to which the timer must connect,
+• CLI password: Password of the network to which the
+timer.
+By default, CLI SSID and password are empty.
+The timer has the possibility of connecting to a WiFi network different from the
+its own, which allows it to be configured from another computer connected to the
+same Wi-Fi network. On the box of your home for example.
+The address to enter in your browser to access the timer is
+the one indicated at the bottom of the Wifi configuration page:
+In this example: http://192.168.1.22
+Gauthier Brière – November 2021.
